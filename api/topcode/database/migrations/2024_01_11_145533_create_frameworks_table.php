@@ -15,8 +15,7 @@ class CreateFrameworksTable extends Migration
     {
         Schema::create('frameworks', function (Blueprint $table) {
             $table->id();
-            $table->integer('framework_id');
-            $table->varchar('name');
+            $table->string('name');
             $table->timestamps();
         });
     }

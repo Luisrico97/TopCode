@@ -15,10 +15,13 @@ class CreatePublicationsTable extends Migration
     {
         Schema::create('publications', function (Blueprint $table) {
             $table->id();
-            $table->varchar('publication');
-            $table->dateTime('date');
+            $table->string('publication');
+            $table->string('date');
             $table->boolean('visibily');
-            $table->integer('publication_id');
+            $table->integer('language_id');
+            $table->integer('vote_id');
+            $table->integer('framework_id');
+            $table->integer('comment_id');
             $table->timestamps();
         });
     }
