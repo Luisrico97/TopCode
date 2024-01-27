@@ -47,4 +47,60 @@ class FrameworkController extends Controller
         
         return response()->json($object);
         }
+
+
+        public function create(Request $request) {
+            $data = $request->validate([
+                'name' => 'required|min:3|max:20'
+            ]);
+            
+            $framework = Framework::create([
+                'name'=> $data['name'],
+            ]);
+    
+            if ($framework) {
+                $object = [
+                    "response" => 'Succes.Item saved correctly.',
+                    "data" => $framework
+                ];
+                return response()->json($object);
+            }else {
+                $object = [
+    
+                    "response" => 'Error:Something went wrong, please try again.',
+        
+                ];
+        
+                return response()->json($object);
+            }
+        }
+        
+        //modificacion 
+        public function update(Request $request)
+        {
+            $data = $request->validate([
+                'id' => 'required|integer|min:1',
+                'name' => 'required|min:3',
+            ]);
+            $framework = Framework::where('id', '=', $data['id'])->first();
+
+            $framework->name = $data['name'];
+            
+            if($framework->update()) {
+                $object = [
+                    "response" => 'Success. Item update successfully.',
+                    "data" => $framework,
+                ];
+                return response()->json($object);
+            }else {
+                $object = [
+    
+                    "response" => 'Error:Something went wrong, please try again.',
+        
+                ];
+        
+                return response()->json($object);
+            }
+        }
     }
+

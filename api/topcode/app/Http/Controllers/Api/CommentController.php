@@ -51,4 +51,61 @@ class CommentController extends Controller
         
         return response()->json($object);
         }
-}
+
+        //Creacion
+        public function create(Request $request) {
+            $data = $request->validate([
+                'name' => 'required|min:3|max:20'
+            ]);
+            
+            $comment = Comment::create([
+                'name'=> $data['name'],
+            ]);
+    
+            if ($comment) {
+                $object = [
+                    "response" => 'Succes.Item saved correctly.',
+                    "data" => $comment
+                ];
+                return response()->json($object);
+            }else {
+                $object = [
+    
+                    "response" => 'Error:Something went wrong, please try again.',
+        
+                ];
+        
+                return response()->json($object);
+            }
+        }
+        
+        //modificacion 
+        public function update(Request $request)
+        {
+            $data = $request->validate([
+                'id' => 'required|integer|min:1',
+                'name' => 'required|min:3',
+            ]);
+            $comment = comment::where('id', '=', $data['id'])->first();
+
+            $comment->name = $data['name'];
+            
+            if($comment->update()) {
+                $object = [
+                    "response" => 'Success. Item update successfully.',
+                    "data" => $comment,
+                ];
+                return response()->json($object);
+            }else {
+                $object = [
+    
+                    "response" => 'Error:Something went wrong, please try again.',
+        
+                ];
+        
+                return response()->json($object);
+            }
+        }
+    }
+
+
