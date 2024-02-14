@@ -55,11 +55,15 @@ class CommentController extends Controller
         //Creacion
         public function create(Request $request) {
             $data = $request->validate([
-                'name' => 'required|min:3|max:20'
+                'Comment' => 'required|min:3',
+                'date' => 'required|min:3',
+                'visibily' => 'required|min:3'
             ]);
             
             $comment = Comment::create([
-                'name'=> $data['name'],
+                'Comment'=> $data['Comment'],
+                'date'=> $data['date'],
+                'visibily'=> $data['visibily'],
             ]);
     
             if ($comment) {
@@ -84,11 +88,15 @@ class CommentController extends Controller
         {
             $data = $request->validate([
                 'id' => 'required|integer|min:1',
-                'name' => 'required|min:3',
+                'Comment' => 'required|min:3',
+                'date' => 'required|min:3',
+                'visibily' => 'required|min:3'
             ]);
             $comment = comment::where('id', '=', $data['id'])->first();
 
-            $comment->name = $data['name'];
+            $comment->comment = $data['Comment'];
+            $comment->date = $data['Comment'];
+            $comment->visibily = $data['Comment'];
             
             if($comment->update()) {
                 $object = [

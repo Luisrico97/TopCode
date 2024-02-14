@@ -46,4 +46,36 @@ class LanguageController extends Controller
         
         return response()->json($object);
         }
+
+         //modificacion 
+            public function update(Request $request)
+            {
+                $data = $request->validate([
+                    'id' => 'required|integer|min:1',
+                    'type' => 'required|min:3',
+                ]);
+                
+                $Language = Language::where('id', '=', $data['id'])->first();
+    
+                $Language->type = $data['type'];
+                
+                if($Language->update()) {
+                    $object = [
+                        "response" => 'Success. Item update successfully.',
+                        "data" => $Language,
+                    ];
+                    return response()->json($object);
+                }else {
+                    $object = [
+        
+                        "response" => 'Error:Something went wrong, please try again.',
+            
+                    ];
+            
+                    return response()->json($object);
+                }
+            }
+
+
+        
 }

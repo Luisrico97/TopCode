@@ -46,4 +46,58 @@ class VoteController extends Controller
         
         return response()->json($object);
         }
+
+        public function create(Request $request) {
+            $data = $request->validate([
+                'count' => 'required|min:1'
+            ]);
+            
+            $Vote = Vote::create([
+                'count'=> $data['count']
+            ]);
+    
+            if ($Vote) {
+                $object = [
+                    "response" => 'Succes.Item saved correctly.',
+                    "data" => $Vote
+                ];
+                return response()->json($object);
+            }else {
+                $object = [
+    
+                    "response" => 'Error:Something went wrong, please try again.',
+        
+                ];
+        
+                return response()->json($object);
+            }
+        }
+        
+        //modificacion 
+        public function update(Request $request)
+        {
+            $data = $request->validate([
+                'id' => 'required|integer|min:1',
+                'count' => 'required|min:1'
+            ]);
+            $Vote = Vote::where('id', '=', $data['id'])->first();
+
+            $Vote->Vote = $data['Vote'];
+            
+            if($Vote->update()) {
+                $object = [
+                    "response" => 'Success. Item update successfully.',
+                    "data" => $Vote,
+                ];
+                return response()->json($object);
+            }else {
+                $object = [
+    
+                    "response" => 'Error:Something went wrong, please try again.',
+        
+                ];
+        
+                return response()->json($object);
+            }
+        }
 }

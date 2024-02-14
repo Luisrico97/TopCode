@@ -60,4 +60,82 @@ class PublicationController extends Controller
         
         return response()->json($object);
         }
+
+        public function create(Request $request) {
+            $data = $request->validate([
+                'Publication' => 'required|min:3',
+                'date' => 'required|min:3',
+                'visibily' => 'required|min:3',
+                'language' => 'required|min:3',
+                'vote' => 'required|min:3',
+                'framework' => 'required|min:3',
+                'comment' => 'required|min:3'
+
+            ]);
+            
+            $Publication = Publication::create([
+                'Publication'=> $data['Publication'],
+                'date'=> $data['date'],
+                'visibily'=> $data['visibily'],
+                'language' => $data['language'],
+                'vote' => $data['vote'],
+                'framework' => $data['framework'],
+                'comment' => $data['comment']
+            ]);
+    
+            if ($Publication) {
+                $object = [
+                    "response" => 'Succes.Item saved correctly.',
+                    "data" => $Publication
+                ];
+                return response()->json($object);
+            }else {
+                $object = [
+    
+                    "response" => 'Error:Something went wrong, please try again.',
+        
+                ];
+        
+                return response()->json($object);
+            }
+        }
+        
+        //modificacion 
+        public function update(Request $request)
+        {
+            $data = $request->validate([
+                'Publication' => 'required|min:3',
+                'date' => 'required|min:3',
+                'visibily' => 'required|min:3',
+                'language' => 'required|min:3',
+                'vote' => 'required|min:3',
+                'framework' => 'required|min:3',
+                'comment' => 'required|min:3'
+            ]);
+            $Publication = Publication::where('id', '=', $data['id'])->first();
+
+            $Publication->Publication= $data['Publication'];
+            $Publication->date= $data['date'];
+            $Publication->visibily= $data['visibily'];
+            $Publication->language = $data['language'];
+            $Publication->vote= $data['vote'];
+            $Publication->framework= $data['framework'];
+            $Publication->comment= $data['comment'];
+
+            if($Publication->update()) {
+                $object = [
+                    "response" => 'Success. Item update successfully.',
+                    "data" => $Publication,
+                ];
+                return response()->json($object);
+            }else {
+                $object = [
+    
+                    "response" => 'Error:Something went wrong, please try again.',
+        
+                ];
+        
+                return response()->json($object);
+            }
+        }
 }
