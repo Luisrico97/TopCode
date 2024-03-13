@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLanguajesTable extends Migration
+class AddUserIdToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateLanguajesTable extends Migration
      */
     public function up()
     {
-        /* la palabra languaje ponerlo en plural */
-        Schema::create('languages', function (Blueprint $table) {
-            $table->id();
-            $table->string('type');
-            $table->timestamps();
+        Schema::table('publications', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
+    
 
     /**
      * Reverse the migrations.
@@ -28,6 +27,8 @@ class CreateLanguajesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('languaje');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 }

@@ -8,30 +8,27 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function list() {
-
-        $Comment = Comment::all();
-                                //::where('id', '=', $id)->first();
-        $list = [];
-        //dd = dumpOrDie
-        foreach($Comment as $Comment){
-
-            $object = [
-            "id" => $Comment->id,
-            "comment" => $Comment->comment,
-            "date" => $Comment->date,
-            "visibily" => $Comment->visibily,
-            "created" => $Comment->created_at,
-            "updated" => $Comment->update_at
+    public function list($publicationId) {
+        $comments = Comment::where('comment_id', $publicationId)->get(); // Cambiado de 'publication_id' a 'comment_id'
+        $commentList = [];
+        
+        foreach ($comments as $comment) {
+            $commentObject = [
+                "id" => $comment->id,
+                "comment" => $comment->comment,
+                "date" => $comment->date,
+                "visibily" > $comment->visibily,
+                "created" => $comment->created_at,
+                "updated" => $comment->updated_at
             ];
-            array_push($list, $object);
+            array_push($commentList, $commentObject);
         }
         
-
-        
-        return response()->json($list);
+        return response()->json($commentList);
     }
+    
 
+    
 
     public function item($id) {
 
@@ -42,11 +39,12 @@ class CommentController extends Controller
 
             $object = [
                 "id" => $Comment->id,
-                "Comment" => $Comment->comment,
+                "comment" => $Comment->comment,
                 "date" => $Comment->date,
                 "visibily" => $Comment->visibily,
                 "created" => $Comment->created_at,
-                "updated" => $Comment->update_at
+                "updated" => $Comment->updated_at
+
             ];
         
         return response()->json($object);
@@ -55,48 +53,48 @@ class CommentController extends Controller
         //Creacion
         public function create(Request $request) {
             $data = $request->validate([
-                'Comment' => 'required|min:3',
-                'date' => 'required|min:3',
-                'visibily' => 'required|min:3'
+                'comment' => 'required|min:3',
+                'date' => 'required|date_format:Y-m-d',
+                'visibility' => 'required|min:1'
             ]);
             
-            $comment = Comment::create([
-                'Comment'=> $data['Comment'],
-                'date'=> $data['date'],
-                'visibily'=> $data['visibily'],
-            ]);
-    
-            if ($comment) {
+            try {
+                $comment = Comment::create([
+                    'comment' => $data['comment'],
+                    'date' => $data['date'],
+                    'visibility' => $data['visibility'],
+                ]);
+        
                 $object = [
-                    "response" => 'Succes.Item saved correctly.',
+                    "response" => 'Success. Item saved correctly.',
                     "data" => $comment
                 ];
                 return response()->json($object);
-            }else {
+            } catch (\Exception $e) {
                 $object = [
-    
-                    "response" => 'Error:Something went wrong, please try again.',
-        
+                    "response" => 'Error: Something went wrong, please try again.',
+                    "error" => $e->getMessage() // Optional: Include the actual error message for debugging
                 ];
         
-                return response()->json($object);
+                return response()->json($object, 500);
             }
         }
+        
         
         //modificacion 
         public function update(Request $request)
         {
             $data = $request->validate([
                 'id' => 'required|integer|min:1',
-                'Comment' => 'required|min:3',
+                'comment' => 'required|min:3',
                 'date' => 'required|min:3',
                 'visibily' => 'required|min:3'
             ]);
             $comment = comment::where('id', '=', $data['id'])->first();
 
-            $comment->comment = $data['Comment'];
-            $comment->date = $data['Comment'];
-            $comment->visibily = $data['Comment'];
+            $comment->comment = $data['comment'];
+            $comment->date = $data['comment'];
+            $comment->visibily = $data['comment'];
             
             if($comment->update()) {
                 $object = [

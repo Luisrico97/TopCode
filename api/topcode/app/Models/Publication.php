@@ -11,4 +11,8 @@ class Publication extends Model
 
     protected $fillable = ['publication','date','visibily'];
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

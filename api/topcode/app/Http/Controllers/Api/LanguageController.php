@@ -76,6 +76,29 @@ class LanguageController extends Controller
                 }
             }
 
-
+            public function create(Request $request)
+            {
+                $data = $request->validate([
+                    'type' => 'required|min:1',
+                ]);
+            
+                $language = Language::create([
+                    'type' => $data['type'],
+                ]);
+            
+                if ($language) {
+                    $object = [
+                        "response" => 'Success. Language created successfully.',
+                        "data" => $language
+                    ];
+                    return response()->json($object);
+                } else {
+                    $object = [
+                        "response" => 'Error: Something went wrong, please try again.',
+                    ];
+                    return response()->json($object);
+                }
+            }
+            
         
 }

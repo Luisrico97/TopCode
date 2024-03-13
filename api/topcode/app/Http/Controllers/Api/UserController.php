@@ -8,132 +8,98 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function list() {
+    public function list()
+    {
         $users = User::all();
-        $list =[];
+        $list = [];
 
-            foreach($users as $user) {
-                $object = [
-                "id"=>$user->id,
-                "name"=>$user->name,
-                "surname" =>$user->surname,
-                "mail" =>$user->mail,
-                "phone" =>$user->phone,
-                "password" =>$user->password,
-                "image" =>$user->image,
-
-                "created"=>$user->created_at,
-                "updated"=>$user->updated_at
-                ];
-                array_push($list, $object);
-            }
-            return response()->json($list);
+        foreach ($users as $user) {
+            $object = [
+                "id" => $user->id,
+                "ename" => $user->ename,
+                "surname" => $user->surname,
+                "email" => $user->email,
+                "phone" => $user->phone,
+                "password" => $user->password,
+                "image" => $user->image,
+                "created" => $user->created_at,
+                "updated" => $user->updated_at
+            ];
+            array_push($list, $object);
         }
-        public function item($id) {
-            $user = user::where('id', '=', $id)->first();
-                $object =[
-    
-                "id"=>$user->id,
-                "name"=>$user->name,
-                "surname" =>$user->surname,
-                "mail" =>$user->mail,
-                "phone" =>$user->phone,
-                "password" =>$user->password,
-                "image" =>$user->image,
-
-                "created"=>$user->created_at,
-                "updated"=>$user->updated_at
-                ];           
-            
-    
-            return response()->json($object);
-        }
-        public function create(Request $request) {
-            $data = $request->validate([
-                'name'=> 'required|min:3,max:20',
-                'surname'=> 'required|min:3,max:20',
-                'mail'=> 'required|min:3,max:20',
-                'phone'=> 'required|min:3,max:20',
-                'password'=> 'required|min:3,max:20',
-                'image'=> 'required|min:3,max:20'
-
-            ]);
-            
-            $user = User::create([
-                'name'=> $data['name'],
-                'surname'=> $data['surname'],
-                'mail'=> $data['mail'],
-                'phone'=> $data['phone'],
-                'password'=> $data['dob'],
-                'dob'=> $data['dob']
-
-
-            ]);
-    
-            if ($user) {
-                $object = [
-    
-                    "response" => 'Succes.Item saved correctly.',
-                    "data" => $user
-        
-                ];
-        
-                return response()->json($object);
-            }else {
-                $object = [
-    
-                    "response" => 'Error:Something went wrong, please try again.',
-        
-                ];
-        
-                return response()->json($object);
-            }
-                
+        return response()->json($list);
     }
-    public function update(Request $request) {
 
+    public function item($id)
+    {
+        $user = User::findOrFail($id);
+        $object = [
+            "id" => $user->id,
+            "name" => $user->name,
+            "surname" => $user->surname,
+            "email" => $user->email,
+            "phone" => $user->phone,
+            "password" => $user->password,
+            "image" => $user->image,
+            "created" => $user->created_at,
+            "updated" => $user->updated_at
+        ];
 
-        $data = $request->validate([
+        return response()->json($object);
+    }
 
-            'id'=> 'required|inteher|min:1',
-            'name'=> 'required|min:3,max:20',
-            'surname'=> 'required|min:3,max:20',
-            'mail'=> 'required|min:3,max:20',
-            'phone'=> 'required|min:3,max:20',
-            'password'=> 'required|min:3,max:20',
-            'dob'=> 'required|min:3,max:20'
-
-
+  
+    public function create(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'surname' => 'nullable|string|max:191',
+            'phone' => 'nullable|string|max:191',
+            'email' => 'required|string|email|max:191|unique:users',
+            'password' => 'required|string|min:8|max:191',
+            'image' => 'nullable|string|max:191',
+            // Agrega validaciones adicionales según tus necesidades
         ]);
-        $user = User::where('id', '=', $data['id'])->first();
-
-        $user->name = $data['name'];
-        $user->surname = $data['surname'];
-        $user->mail = $data['mail'];
-        $user->phone = $data['phone'];
-        $user->password = $data['password'];
-        $user->dob = $data['dob'];
         
-        
-        if ($user) {
-            $object = [
 
-                "response" => 'Succes.Item updated successfully.',
-                "data" => $user
-    
-            ];
-    
-            return response()->json($object);
-        }else {
-            $object = [
+        $user = User::create([
+            'name' => $request->input('name'),
+            'surname' => $request->input('surname'),
+            'phone' => $request->input('phone'),
+            'email' => $request->input('email'),
+            'password' => bcrypt($request->input('password')), // Asegúrate de encriptar la contraseña
+            'image' => $request->input('image', 'placeholder.png'), // Valor predeterminado si no se proporciona una imagen
+            // Cualquier otro campo que necesites para crear un usuario
+        ]);
 
-                "response" => 'Error: Something went wrong, please try again.',
-    
-            ];
-    
-            return response()->json($object);
+        return response()->json(['message' => 'Usuario creado correctamente', 'user' => $user], 201);
+    }
 
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
 
-        }
+        $request->validate([
+            'name' => 'required|string|max:191',
+            'surname' => 'nullable|string|max:191',
+            'phone' => 'nullable|string|max:191',
+            'email' => 'required|string|email|max:191|unique:users,email,' . $user->id,
+            'password' => 'required|string|min:8|max:191',
+            'image' => 'nullable|string|max:191',
+            // Agrega validaciones adicionales según tus necesidades
+        ]);
+
+        $user->update([
+            'name' => $request->input('name'),
+            'surname' => $request->input('surname'),
+            'phone' => $request->input('phone'),
+            'email' => $request->input('email'),
+            'password' => bcrypt($request->input('password')), // Asegúrate de encriptar la contraseña
+            'image' => $request->input('image'),
+            // Actualiza cualquier otro campo que necesites
+        ]);
+
+        return response()->json(['message' => 'Usuario actualizado correctamente', 'user' => $user]);
     }
 }
+
