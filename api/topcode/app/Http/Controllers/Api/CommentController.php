@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use App\Models\User; // Importa la clase User
 
 class CommentController extends Controller
 {
@@ -13,13 +14,17 @@ class CommentController extends Controller
         $commentList = [];
         
         foreach ($comments as $comment) {
+            $user = User::find($comment->user_id);
+            $username = $user ? $user->name : 'Unknown User'; // Obtén el nombre del usuario o muestra 'Unknown User' si no se encuentra
+
             $commentObject = [
                 "id" => $comment->id,
                 "comment" => $comment->comment,
                 "date" => $comment->date,
-                "visibily" > $comment->visibily,
+                "visibility" => $comment->visibility,
                 "created" => $comment->created_at,
-                "updated" => $comment->updated_at
+                "updated" => $comment->updated_at,
+                "username" => $username // Agrega el nombre del usuario al objeto del comentario
             ];
             array_push($commentList, $commentObject);
         }

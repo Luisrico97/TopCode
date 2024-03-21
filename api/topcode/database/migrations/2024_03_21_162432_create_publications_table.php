@@ -16,16 +16,17 @@ class CreatePublicationsTable extends Migration
         Schema::create('publications', function (Blueprint $table) {
             $table->id();
             $table->string('publication');
-            $table->string('date');
-            $table->boolean('visibily');
-            $table->integer('language_id');
-            $table->integer('vote_id');
-            $table->integer('framework_id');
-            $table->integer('comment_id');
-            $table->timestamps();
+            $table->date('date');
+            $table->boolean('visibility');
+            $table->unsignedBigInteger('language_id')->default(1);
+            $table->unsignedBigInteger('framework_id');
+            $table->unsignedBigInteger('comment_id');
+            $table->unsignedBigInteger('user_id'); // Definir la columna user_id
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->string('vote_range')->nullable();
+            $table->timestamps(); // Definir timestamps solo una vez
         });
     }
-
     /**
      * Reverse the migrations.
      *

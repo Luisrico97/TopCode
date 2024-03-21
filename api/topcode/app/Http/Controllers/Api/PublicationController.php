@@ -1,145 +1,134 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Models\Publication;
+
 use App\Http\Controllers\Controller;
+use App\Models\Publication;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class PublicationController extends Controller
 {
-    public function list() {
-
-        $Publication = Publication::all();
-                                //::where('id', '=', $id)->first();
+    public function list()
+    {
+        $publications = Publication::all();
         $list = [];
-        //dd = dumpOrDie
-        foreach($Publication as $Publication){
 
+        foreach ($publications as $publication) {
             $object = [
-                "id" => $Publication->id,
-                "publication" => $Publication->publication, // Cambiado de 'Publication' a 'publication'
-                "date" => $Publication->date,
-                "visibily" => $Publication->visibily,
-                "created" => $Publication->created_at,
-                "updated" => $Publication->update_at,
-                //foraneas
-                "language" => $Publication->language_id,
-                "vote" => $Publication->vote_id,
-                "framework" => $Publication->framework_id,
-                "comment" => $Publication->comment_id
+                "id" => $publication->id,
+                "publication" => $publication->publication,
+                "date" => $publication->date,
+                "visibility" => $publication->visibility,
+                "language_id" => $publication->language_id,
+                "framework_id" => $publication->framework_id,
+                "comment_id" => $publication->comment_id,
+                "vote_range" => $publication->vote_range,
+                "created" => $publication->created_at,
+                "updated" => $publication->updated_at
             ];
             array_push($list, $object);
         }
-        
-
-        
         return response()->json($list);
     }
 
-
-    public function item($id) {
-
-        $Publication = Publication::where('id', '=', $id)->first();
-                                //::where('id', '=', $id)->first();
-
-        //dd = dumpOrDie
+    public function item($id)
+    {
+        $publication = Publication::findOrFail($id);
 
         $object = [
-            "id" => $Publication->id,
-            "publication" => $Publication->publication,
-            "date" => $Publication->date,
-            "visibily" => $Publication->visibily,
-            "created" => $Publication->created_at,
-            "updated" => $Publication->update_at,
-            //foraneas
-            "language" => $Publication->language_id,
-            "vote" => $Publication->vote_id,
-            "framework" => $Publication->framework_id,
-            "comment" => $Publication->comment_id
-            ];
-        
-        return response()->json($object);
-        }
-
-        public function create(Request $request)
-{
-    // Valida los datos de la solicitud
-    $data = $request->validate([
-        'publication' => 'required|min:1',
-        'date' => 'required|min:1',
-        'visibily' => 'required|min:1',
-        'language' => 'required|min:1',
-        'vote' => 'required|min:1',
-        'framework' => 'required|min:1',
-        'comment' => 'required|min:1'
-    ]);
-
-    // Crea la publicación y asigna el user_id del usuario autenticado
-    $publication = Publication::create([
-        'publication' => $data['publication'],
-        'date' => $data['date'],
-        'visibily' => $data['visibily'],
-        'language_id' => $data['language'],
-        'vote_id' => $data['vote'],
-        'framework_id' => $data['framework'],
-        'comment_id' => $data['comment'],
-        'user_id' => Auth::id() // Obtiene el ID del usuario autenticado
-    ]);
-
-    if ($publication) {
-        $object = [
-            "response" => 'Success. Item saved correctly.',
-            "data" => $publication
+            "id" => $publication->id,
+            "publication" => $publication->publication,
+            "date" => $publication->date,
+            "visibility" => $publication->visibility,
+            "language_id" => $publication->language_id,
+            "framework_id" => $publication->framework_id,
+            "comment_id" => $publication->comment_id,
+            "created" => $publication->created_at,
+            "updated" => $publication->updated_at
         ];
-        return response()->json($object);
-    } else {
-        $object = [
-            "response" => 'Error: Something went wrong, please try again.',
-        ];
+
         return response()->json($object);
     }
+
+    public function create(Request $request)
+{
+
+    $data = $request->validate([
+        'publication' => 'required|string',
+        'date' => 'required|string',
+        'visibility' => 'required|integer',
+        'language_id' => 'required|integer',
+        'framework_id' => 'integer',
+        'comment_id' => 'required|integer',
+        'user_id' => 'required|integer',
+        'vote_range' => 'required|integer',
+
+    ]);
+
+    $publication = Publication::create([
+        'publication' => $request->input('publication'),
+        'date' => $request->input('date'),
+        'visibility' => $request->input('visibility'),
+        'language_id' => $request->input('language_id'),
+        'framework_id' => $request->input('framework_id'),
+        'comment_id' => $request->input('comment_id'), 
+        'user_id' => $request->input('user_id'), 
+        'vote_range' => $request->input('vote_range'), 
+
+    ]);
+
+    return response()->json(['message' => 'Usuario creado correctamente', 'user' => $publication], 201);
 }
-        
+public function currentPublication(Request $request)
+{
+    return $request->publication(); 
+}
 
-
-        
-        //modificacion 
-        public function update(Request $request)
-        {
-            $data = $request->validate([
-                'Publication' => 'required|min:3',
-                'date' => 'required|min:3',
-                'visibily' => 'required|min:3',
-                'language' => 'required|min:3',
-                'vote' => 'required|min:3',
-                'framework' => 'required|min:3',
-                'comment' => 'required|min:3'
-            ]);
-            $Publication = Publication::where('id', '=', $data['id'])->first();
-
-            $Publication->Publication= $data['Publication'];
-            $Publication->date= $data['date'];
-            $Publication->visibily= $data['visibily'];
-            $Publication->language = $data['language'];
-            $Publication->vote= $data['vote'];
-            $Publication->framework= $data['framework'];
-            $Publication->comment= $data['comment'];
-
-            if($Publication->update()) {
-                $object = [
-                    "response" => 'Success. Item update successfully.',
-                    "data" => $Publication,
-                ];
-                return response()->json($object);
-            }else {
-                $object = [
     
-                    "response" => 'Error:Something went wrong, please try again.',
-        
-                ];
-        
-                return response()->json($object);
-            }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'publication' => 'required|string',
+            'date' => 'required|date',
+            'visibility' => 'required|boolean',
+            'language_id' => 'required|integer',
+            'framework_id' => 'required|integer',
+            'comment_id' => 'required|integer',
+            // Agrega validaciones adicionales según tus necesidades
+        ]);
+
+        $publication = Publication::find($id);
+
+        if (!$publication) {
+            return response()->json(['message' => 'Error: Publicación no encontrada'], 404);
         }
+
+        $publication->publication = $request->input('publication');
+        $publication->date = $request->input('date');
+        $publication->visibility = $request->input('visibility');
+        $publication->language_id = $request->input('language_id');
+        $publication->framework_id = $request->input('framework_id');
+        $publication->comment_id = $request->input('comment_id');
+
+        if ($publication->save()) {
+            return response()->json(['message' => 'Publicación actualizada correctamente', 'publication' => $publication]);
+        } else {
+            return response()->json(['message' => 'Error: Algo salió mal, por favor inténtalo de nuevo.'], 500);
+        }
+    }
+
+    public function delete($id)
+    {
+        $publication = Publication::find($id);
+
+        if (!$publication) {
+            return response()->json(['response' => 'Error: Publicación no encontrada'], 404);
+        }
+
+        $publication->delete();
+
+        return response()->json(['response' => 'Publicación eliminada correctamente']);
+    }
 }
+

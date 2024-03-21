@@ -9,10 +9,11 @@ class Publication extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['publication','date','visibily'];
+    protected $fillable = ['publication', 'date', 'visibility', 'language_id', 'framework_id', 'comment_id', 'user_id', 'vote_range'];
 
     public function comments()
     {
         return $this->hasMany(Comment::class);
     }
 }
+
