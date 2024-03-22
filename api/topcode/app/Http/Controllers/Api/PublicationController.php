@@ -22,7 +22,6 @@ class PublicationController extends Controller
                 "language_id" => $publication->language_id,
                 "framework_id" => $publication->framework_id,
                 "comment_id" => $publication->comment_id,
-                "vote_range" => $publication->vote_range,
                 "created" => $publication->created_at,
                 "updated" => $publication->updated_at
             ];
@@ -50,35 +49,41 @@ class PublicationController extends Controller
         return response()->json($object);
     }
 
+
     public function create(Request $request)
-{
+    {
+        // Validar los datos de la solicitud
+        $data = $request->validate([
+            'publication' => 'required|string',
+            'date' => 'required|string',
+            'visibility' => 'required|integer',
+            'language_id' => 'required|integer',
+            'framework_id' => 'integer',
+            'vote_range' => 'integer',
+        ]);
+    
+        // Obtener el ID del usuario autenticado
+        $userId = Auth::id();
+    
+        // Crear la publicación con el user_id del usuario autenticado
+        $publication = Publication::create([
+            'publication' => $request->input('publication'),
+            'date' => $request->input('date'),
+            'visibility' => $request->input('visibility'),
+            'language_id' => $request->input('language_id'),
+            'framework_id' => $request->input('framework_id'),
+            'user_id' => $userId,  // Establecer user_id como el ID del usuario autenticado
+            'vote_range' => $request->input('vote_range'), 
+        ]);
+    
+        // Establecer el comment_id como el ID de la publicación creada
+        $publication->update(['comment_id' => $publication->id]);
+    
+        // Devolver una respuesta JSON indicando que la publicación se creó correctamente
+        return response()->json(['message' => 'Publicación creada correctamente', 'publication' => $publication], 201);
+    }
+    
 
-    $data = $request->validate([
-        'publication' => 'required|string',
-        'date' => 'required|string',
-        'visibility' => 'required|integer',
-        'language_id' => 'required|integer',
-        'framework_id' => 'integer',
-        'comment_id' => 'required|integer',
-        'user_id' => 'required|integer',
-        'vote_range' => 'required|integer',
-
-    ]);
-
-    $publication = Publication::create([
-        'publication' => $request->input('publication'),
-        'date' => $request->input('date'),
-        'visibility' => $request->input('visibility'),
-        'language_id' => $request->input('language_id'),
-        'framework_id' => $request->input('framework_id'),
-        'comment_id' => $request->input('comment_id'), 
-        'user_id' => $request->input('user_id'), 
-        'vote_range' => $request->input('vote_range'), 
-
-    ]);
-
-    return response()->json(['message' => 'Usuario creado correctamente', 'user' => $publication], 201);
-}
 public function currentPublication(Request $request)
 {
     return $request->publication(); 

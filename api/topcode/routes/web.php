@@ -21,3 +21,5 @@ Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::get('/usercrud', function () {return view('usercrud');});
 
 Route::get('/publicationcrud', function () {return view('publicationcrud');});
+
+Route::get('/login', function () {return view('auth.login');})->name('login');

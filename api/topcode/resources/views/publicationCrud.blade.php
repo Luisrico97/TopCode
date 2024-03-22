@@ -289,23 +289,22 @@ $(document).ready(function(){
 
                     var frameworkType = frameworks[publication.framework_id];
 
-    $('#publicationTable tbody').append(`
-        <tr>
-            <td>${publication.id}</td>
-            <td>${publication.publication}</td>
-            <td>${publication.visibility}</td>
-            <td>${languageType}</td> <!-- Reemplazar language_id con el campo name -->
-            <td>${frameworkType}</td> <!-- Reemplazar framework_id con el campo type -->
-            <td>${publication.vote_range}</td>
-            <td>${publication.created}</td>
-            <td>
-                <a href="#editEmployeeModal" class="edit" data-toggle="modal" data-id="${publication.id}"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                <a href="#deleteEmployeeModal" class="delete" data-toggle="modal" data-id="${publication.id}"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-            </td>
-        </tr>
-    `);
-});
-
+                    $('#publicationTable tbody').append(`
+                        <tr>
+                            <td>${publication.id}</td>
+                            <td>${publication.publication}</td>
+                            <td>${publication.visibility}</td>
+                            <td>${languageType}</td> <!-- Reemplazar language_id con el campo name -->
+                            <td>${frameworkType}</td> <!-- Reemplazar framework_id con el campo type -->
+                            <td>${publication.vote_range}</td>
+                            <td>${publication.created}</td>
+                            <td>
+                                <a href="#editEmployeeModal" class="edit" data-toggle="modal" data-id="${publication.id}"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                                <a href="#deleteEmployeeModal" class="delete" data-toggle="modal" data-id="${publication.id}"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                            </td>
+                        </tr>
+                    `);
+                });
 
                 updatePagination(totalPublications); // Pasar totalPublications a la función updatePagination
             }
@@ -327,8 +326,8 @@ $(document).ready(function(){
         $('.pagination').html(paginationHtml);
     }
 
-  // Manejar clics en la paginación
-  $('.pagination').on('click', 'a.page-link', function(e) {
+    // Manejar clics en la paginación
+    $('.pagination').on('click', 'a.page-link', function(e) {
         e.preventDefault();
         var page = $(this).data('page');
         
@@ -367,6 +366,7 @@ $(document).ready(function(){
             }
         });
     });
+
     $('#addPublicationModal').on('shown.bs.modal', function () {
         // Cargar opciones para Language
         $.ajax({
@@ -419,40 +419,10 @@ $(document).ready(function(){
             }
         });
     });
-    // Enviar formulario al hacer clic en el botón "Add"
-$('#addPublicationForm').submit(function(e) {
-    e.preventDefault(); // Prevenir envío de formulario por defecto
-
-    // Obtener datos del formulario
-    var formData = $(this).serialize();
-    
-    // Obtener los valores seleccionados de language y framework
-    var languageId = $('#languageSelect').val();
-    var frameworkId = $('#frameworkSelect').val();
-    
-    // Agregar los IDs al objeto formData
-    formData += '&language_id=' + languageId + '&framework_id=' + frameworkId;
-
-    // Enviar datos del formulario al backend
-    $.ajax({
-        url: 'http://localhost:8000/api/publications/create', // Ruta en tu backend para crear una nueva publicación
-        type: 'POST',
-        data: formData,
-        success: function(response) {
-            // Manejar la respuesta del backend (p. ej., mostrar un mensaje de éxito)
-            console.log(response);
-            // Cerrar el modal después de agregar la publicación
-            $('#addPublicationModal').modal('hide');
-        },
-        error: function(error) {
-            // Manejar errores (p. ej., mostrar un mensaje de error)
-            console.error(error);
-        }
-    });
-});
 
 });
 </script>
+
 
 
 
