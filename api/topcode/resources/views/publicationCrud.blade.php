@@ -250,7 +250,7 @@ $(document).ready(function(){
 
     function loadFrameworks() {
         $.ajax({
-            url: '/api/frameworks',
+            url: 'https://rico.terrabyteco.com/api/frameworks',
             type: 'GET',
             success: function(data) {
                 data.forEach(function(framework) {
@@ -262,7 +262,7 @@ $(document).ready(function(){
 
     function loadLanguages() {
         $.ajax({
-            url: '/api/languages',
+            url: 'https://rico.terrabyteco.com/api/languages',
             type: 'GET',
             success: function(data) {
                 data.forEach(function(language) {
@@ -274,7 +274,7 @@ $(document).ready(function(){
 
     function loadPublications() {
         $.ajax({
-            url: '/api/publications',
+            url: 'https://rico.terrabyteco.com/api/publications',
             type: 'GET',
             success: function(data) {
                 totalPublications = data.length; // Actualizar totalPublications con la cantidad total de publicaciones
@@ -354,7 +354,7 @@ $(document).ready(function(){
         var publicationId = $(this).data('publicationId');
 
         $.ajax({
-            url: 'http://localhost:8000/api/publications/delete/' + publicationId,
+            url: 'https://rico.terrabyteco.com/api/delete/' + publicationId,
             type: 'DELETE',
             success: function(response) {
                 alert('Publication deleted successfully!');
@@ -384,7 +384,7 @@ $(document).ready(function(){
 
         // Cargar opciones para Framework
         $.ajax({
-            url: '/api/frameworks', // Ruta en tu backend para obtener la lista de frameworks
+            url: 'https://rico.terrabyteco.com/api/frameworks', // Ruta en tu backend para obtener la lista de frameworks
             type: 'GET',
             success: function(data) {
                 var frameworkSelect = $('[name="framework"]');
@@ -404,7 +404,7 @@ $(document).ready(function(){
         var formData = $(this).serialize();
         // Enviar datos del formulario al backend
         $.ajax({
-            url: 'http://localhost:8000/api/publications/create', // Ruta en tu backend para crear una nueva publicación
+            url: 'https://rico.terrabyteco.com/api/create', // Ruta en tu backend para crear una nueva publicación
             type: 'POST',
             data: formData,
             success: function(response) {

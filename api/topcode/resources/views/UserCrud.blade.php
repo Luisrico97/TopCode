@@ -246,7 +246,7 @@ $(document).ready(function() {
     // Función para obtener la lista de usuarios y mostrarla en la tabla
     function getUsers() {
         $.ajax({
-            url: 'http://localhost:8000/api/users', // Ruta para obtener la lista de usuarios desde tu controlador
+            url: 'https://rico.terrabyteco.com/api/users', // Ruta para obtener la lista de usuarios desde tu controlador
             type: 'GET',
             success: function(response) {
     totalUsers = response.length;
@@ -332,7 +332,7 @@ $(document).ready(function() {
 
         // Realizar la solicitud AJAX para crear un nuevo usuario
         $.ajax({
-            url: 'http://localhost:8000/api/users/create',
+            url: 'https://rico.terrabyteco.com/api/create',
             type: 'POST',
             data: {
                 name: name,
@@ -371,7 +371,7 @@ $('#deleteEmployeeForm').submit(function(e) {
 
     // Realizar la solicitud AJAX para eliminar el usuario
     $.ajax({
-        url: 'http://localhost:8000/api/users/delete/' + userId,
+        url: 'https://rico.terrabyteco.com/api/delete/' + userId,
         type: 'DELETE',
         success: function(response) {
             // Mostrar mensaje de éxito
@@ -394,7 +394,7 @@ $('#deleteEmployeeForm').submit(function(e) {
         
         // Realizar una solicitud AJAX para obtener la información del usuario
         $.ajax({
-            url: 'http://localhost:8000/api/users/' + userId, // Reemplaza esta URL con la correcta para obtener la información del usuario
+            url: 'https://rico.terrabyteco.com/api/users/' + userId, // Reemplaza esta URL con la correcta para obtener la información del usuario
             type: 'GET',
             success: function(response) {
                 // Llenar los campos del formulario con la información del usuario
@@ -425,7 +425,7 @@ $('#deleteEmployeeForm').submit(function(e) {
 
         // Realizar la solicitud AJAX para actualizar el usuario
         $.ajax({
-            url: 'http://localhost:8000/api/users/update/' + id,
+            url: 'https://rico.terrabyteco.com/api/update/' + id,
             type: 'POST', // Utilizar POST para actualizar datos
             data: {
                 name: name,
